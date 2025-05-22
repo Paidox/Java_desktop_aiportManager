@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="714.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controller.Controller">
+    <top>
+        <VBox prefHeight="100.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+
+            <MenuBar>
+                <Menu mnemonicParsing="false" text="File">
+                    <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save as" />
+                    <MenuItem mnemonicParsing="false" onAction="#readFrom" text="Read from" />
+                    <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                </Menu>
+                <Menu text="Flights">
+                    <MenuItem mnemonicParsing="false" onAction="#addFlight" text="Add flight" />
+                    <MenuItem mnemonicParsing="false" onAction="#deleteFlight" text="Delete flight" />
+                    <MenuItem mnemonicParsing="false" onAction="#showFlights" text="Show flights" />
+                </Menu>
+                <Menu text="Tickets">
+                    <MenuItem mnemonicParsing="false" onAction="#addTicket" text="Add Ticket" />
+                    <MenuItem mnemonicParsing="false" onAction="#deleteTicket" text="Delete Ticket" />
+                    <MenuItem mnemonicParsing="false" onAction="#showTickets" text="Show Ticket" />
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <MenuItem mnemonicParsing="false" onAction="#about" text="About">
+                    </MenuItem>
+                </Menu>
+            </MenuBar>
+
+            <ComboBox fx:id="operationsChoiceBox" prefHeight="26.0" prefWidth="310.0" promptText="You can choose an operation:">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="1. Find flights by destination" />
+                        <String fx:value="2. Find flights after specific time" />
+                        <String fx:value="3. Find ticket by flight number" />
+                        <String fx:value="4. Sort by time and number" />
+                        <String fx:value="5. Check flight by number and airline" />
+                        <String fx:value="6. Sort ticket by airline" />
+                        <String fx:value="7. Group flights by destination" />
+                        <String fx:value="8. For destination find the flight with the earliest departure time" />
+                    </FXCollections>
+                </items>
+                <VBox.margin>
+                    <Insets left="5.0" top="5.0" />
+                </VBox.margin>
+            </ComboBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <VBox.margin>
+                    <Insets left="5.0" top="5.0" />
+                </VBox.margin>
+                <Button mnemonicParsing="false" onAction="#showFlights" style="-fx-background-color: #C0C0C0;" text="Load" textFill="BLACK"/>
+                <Button mnemonicParsing="false" onAction="#runOperation" style="-fx-background-color: #C0C0C0;" text="Run" textFill="BLACK"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <AnchorPane prefHeight="600.0" prefWidth="927.0">
+            <TableView fx:id="flightTable" layoutX="5.0" layoutY="5.0" prefHeight="533.0" prefWidth="590.0" AnchorPane.bottomAnchor="4.6" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="4.6" AnchorPane.topAnchor="5.0">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="30.0" text="Id" />
+                    <TableColumn fx:id="destination" prefWidth="100.0" text="Destination" />
+                    <TableColumn fx:id="flightNumber" prefWidth="100.0" text="Number" />
+                    <TableColumn fx:id="departureTime" prefWidth="100.0" text="Departure" />
+                    <TableColumn fx:id="arrivalTime" prefWidth="100.0" text="Arrival" />
+                    <TableColumn fx:id="seatCount" prefWidth="50.0" text="Seats" />
+                    <TableColumn fx:id="airline" prefWidth="120.0" text="Airline" />
+                </columns>
+            </TableView>
+
+            <TableView fx:id="ticketsTable" layoutX="5.0" layoutY="295.0" prefHeight="533.0" prefWidth="590.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="4.6" AnchorPane.bottomAnchor="5.0" visible="false">
+                <columns>
+                    <TableColumn fx:id="passengerNameCol" prefWidth="150.0" text="Passenger Name" />
+                    <TableColumn fx:id="flightNumberCol" prefWidth="120.0" text="Flight Number" />
+                    <TableColumn fx:id="destinationCol" prefWidth="150.0" text="Destination" />
+                    <TableColumn fx:id="airlineCol" prefWidth="150.0" text="Airline" />
+                </columns>
+            </TableView>
+        </AnchorPane>
+    </center>
+</BorderPane>

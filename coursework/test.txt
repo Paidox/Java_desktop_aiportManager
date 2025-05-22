@@ -1,0 +1,10 @@
+1;New York;FL223;10:30;14:15;299;Delta Air Lines;
+2;Tokyo;FL456;12:00;21:30;149;ANA;
+3;Paris;FL789;14:00;15:35;200;Air France;
+4;London;FL012;16:45;20:00;250;British Airways;
+5;Dubai;FL345;18:30;23:30;100;Emirates;
+6;Dubai;FL145;17:30;22:00;100;Emirates;
+7;New York;FL123;09:30;14:15;300;American Air Lines;
+8;Singapore;FL678;20:15;04:00;180;Singapore Airlines;
+9;Istanbul;FL878;23:20;03:45;200;Turkish Airlines;
+1;New York;FL223;10:30;14:15;299;Delta Air Lines;
