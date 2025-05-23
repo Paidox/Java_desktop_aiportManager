@@ -88,7 +88,8 @@ public class Controller
   }
 
   @FXML
-  public void saveAs() {
+  public void saveAs() 
+  {
     input.saveData(tickets1, tickets);
     updateTable(tickets1);
     updateTicketsTable(tickets);
@@ -126,7 +127,7 @@ public class Controller
   {
     ticketsTable.setVisible(false);
     flightTable.setVisible(true);
-    Flight newFlight = input.enterNewFlight();
+    Flight newFlight = input.enterNewFlight(flights);
     if (newFlight == null) return;
     service.addFlights(tickets1, newFlight);
     updateTable(tickets1);
