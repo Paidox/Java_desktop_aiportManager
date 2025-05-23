@@ -8,10 +8,8 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import main.factory.Factory;
 import main.io.Input;
 import main.io.View;
@@ -24,7 +22,7 @@ import java.util.Optional;
 
 public class Controller
 {
-  private  final List<Flight> tickets1 = Factory.createFlights();
+  private  final List<Flight> flights = Factory.createFlights();
 
   private  final List<Ticket> tickets = Factory.createTickets();
   private final View view = new View();
@@ -88,18 +86,17 @@ public class Controller
   }
 
   @FXML
-  public void saveAs() 
-  {
-    input.saveData(tickets1, tickets);
-    updateTable(tickets1);
+  public void saveAs() {
+    input.saveData(flights, tickets);
+    updateTable(flights);
     updateTicketsTable(tickets);
   }
 
   @FXML
   public void readFrom()
   {
-    input.readData(tickets1, tickets);
-    updateTable(tickets1);
+    input.readData(flights, tickets);
+    updateTable(flights);
     updateTicketsTable(tickets);
   }
 
@@ -116,7 +113,7 @@ public class Controller
   @FXML
   public void showFlights()
   {
-    updateTable(tickets1);
+    updateTable(flights);
 
     flightTable.setVisible(true);
     ticketsTable.setVisible(false);
@@ -129,8 +126,8 @@ public class Controller
     flightTable.setVisible(true);
     Flight newFlight = input.enterNewFlight(flights);
     if (newFlight == null) return;
-    service.addFlights(tickets1, newFlight);
-    updateTable(tickets1);
+    service.addFlights(flights, newFlight);
+    updateTable(flights);
   }
 
   @FXML
@@ -142,19 +139,19 @@ public class Controller
     Flight selectedFlight = flightTable.getSelectionModel().getSelectedItem();
     if (selectedFlight == null)
     {
-      View.showError("No flight selected.");
+      view.showError("No flight selected.");
       return;
     }
 
     int flightId = selectedFlight.getId();
-    boolean removed = service.removeFlight(tickets1, tickets, flightId);
+    boolean removed = service.removeFlight(flights, tickets, flightId);
 
     if (removed) {
-      updateTable(tickets1);
+      updateTable(flights);
       updateTicketsTable(tickets);
-      View.showText("Flight", "Flight successfully deleted.");
+      view.showText("Flight", "Flight successfully deleted.");
     } else {
-      View.showError("Failed to delete the flight.");
+      view.showError("Failed to delete the flight.");
     }
   }
 
@@ -172,7 +169,7 @@ public class Controller
 
     updateTicketsTable(tickets);
     input.showTicketAddedMessage();
-    updateTable(tickets1);
+    updateTable(flights);
 
     ticketsTable.setVisible(true);
     flightTable.setVisible(false);
@@ -187,21 +184,21 @@ public class Controller
     Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
     if (selectedTicket == null)
     {
-      View.showError("No ticket selected.");
+      view.showError("No ticket selected.");
       return;
     }
 
-    boolean removed = service.removeTicket(tickets, tickets1, selectedTicket);
+    boolean removed = service.removeTicket(tickets, flights, selectedTicket);
     if (removed)
     {
       flightTable.refresh();
       updateTicketsTable(tickets);
-      updateTable(tickets1);
+      updateTable(flights);
       view.showText("Ticket", "Ticket successfully deleted.");
     }
     else
     {
-      View.showError("Failed to delete the ticket.");
+      view.showError("Failed to delete the ticket.");
     }
   }
 
@@ -223,7 +220,7 @@ public class Controller
       case "1. Find flights by destination" ->
       {
         String city = input.enterText("Enter destination city:");
-        List<Flight> result = service.findByDestination(tickets1, city);
+        List<Flight> result = service.findByDestination(flights, city);
         flightTable.setVisible(true);
         ticketsTable.setVisible(false);
         updateTable(result);
@@ -232,7 +229,7 @@ public class Controller
       case "2. Find flights after specific time" ->
       {
         LocalTime time = input.enterTime("Enter departure time (HH:mm):");
-        List<Flight> result = service.findByTime(tickets1, time);
+        List<Flight> result = service.findByTime(flights, time);
         flightTable.setVisible(true);
         ticketsTable.setVisible(false);
         updateTable(result);
@@ -249,7 +246,7 @@ public class Controller
 
       case "4. Sort by time and number" ->
       {
-        List<Flight> sortedFlights = service.sortByStopsAndNumber(tickets1);
+        List<Flight> sortedFlights = service.sortByStopsAndNumber(flights);
         flightTable.setVisible(true);
         ticketsTable.setVisible(false);
         updateTable(sortedFlights);
@@ -259,7 +256,7 @@ public class Controller
       {
         String number = input.enterText("Enter flight number:");
         String air = input.enterText("Enter airlines:");
-        Flight found = service.checkFlightByNumberAndAirline(tickets1, number, air);
+        Flight found = service.checkFlightByNumberAndAirline(flights, number, air);
         flightTable.setVisible(true);
         ticketsTable.setVisible(false);
         if (found != null)
@@ -280,7 +277,7 @@ public class Controller
 
       case "7. Group flights by destination" ->
       {
-        Map<String, List<Flight>> grouped = service.getFlightsGroupedByDestinationSortedByNumber(tickets1);
+        Map<String, List<Flight>> grouped = service.getFlightsGroupedByDestinationSortedByNumber(flights);
         List<Flight> all = grouped.values().stream().flatMap(List::stream).toList();
         flightTable.setVisible(true);
         ticketsTable.setVisible(false);
@@ -288,7 +285,7 @@ public class Controller
       }
 
       case "8. For destination find the flight with the earliest departure time" -> {
-        Map<String, Flight> leastStopFlight = service.getWithLessDepartureTime(tickets1);
+        Map<String, Flight> leastStopFlight = service.getWithLessDepartureTime(flights);
         flightTable.setVisible(true);
         ticketsTable.setVisible(false);
         updateTable(new ArrayList<>(leastStopFlight.values()));
