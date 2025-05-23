@@ -37,23 +37,10 @@ class ServiceTest
     Files.deleteIfExists(Path.of("testFlights.txt"));
   }
 
-  @Test
-  void testAddPlane() {
-
-    List<Flight> planes = Factory.createFlights();
-    Flight newPlane = Factory.createFlight("Rome", "FL999", "13:00", "17:00", 180, "Alitalia");
-
-    service.addFlights(planes, newPlane);
-
-    assertEquals(10, planes.size());
-    assertEquals(newPlane, planes.get(9));
-  }
-
 
   @Test
   void testAddTicket()
   {
-
     List<Ticket> tickets = Factory.createTickets();
     Ticket newTicket = Factory.createTicket(3, "Ivan Topchii", "FL789", "Paris", "Bubu");
 
@@ -63,16 +50,39 @@ class ServiceTest
   }
 
   @Test
-  void testRemoveFlightById()
-  {
-    List<Flight> planes = Factory.createFlights();
-    List<Ticket> tickets = Factory.createTickets();
-    int idToRemove = 2;
+  void testRemoveFlightById() {
+    Service service = new Service();
 
-    boolean removed = service.removeFlight(planes, tickets, idToRemove);
+    List<Flight> flights = new ArrayList<>();
+    List<Ticket> tickets = new ArrayList<>();
+
+    Flight flight = new Flight(1, "Kyiv", "FL001",
+            LocalTime.of(10, 0), LocalTime.of(12, 0),
+            100, "UIA");
+
+    flights.add(flight);
+
+    Ticket ticket = new Ticket(1, "John Doe", "FL001", "Kyiv", "UIA");
+    tickets.add(ticket);
+
+    boolean removed = service.removeFlight(flights, tickets, 1);
 
     assertTrue(removed);
-    assertEquals(8, planes.size());
+    assertEquals(0, flights.size());
+    assertEquals(0, tickets.size());
+  }
+
+
+  @Test
+  void testAddFlight() {
+
+    List<Flight> planes = Factory.createFlights();
+    Flight newPlane = Factory.createFlight("Rome", "FL999", "13:00", "17:00", 180, "Alitalia");
+
+    service.addFlights(planes, newPlane);
+
+    assertEquals(10, planes.size());
+    assertEquals(newPlane, planes.get(9));
   }
 
 
@@ -100,7 +110,8 @@ class ServiceTest
 
     List<Flight> result = service.findByDestination(planes, "Dubai");
 
-    for (Flight plane : result) {
+    for (Flight plane : result)
+    {
       Assertions.assertEquals(expected, plane.getDestination());
     }
   }
@@ -209,10 +220,11 @@ class ServiceTest
           "Dubai, 17:30",
           "New York, 09:30"
   })
-  void testGetWithLessDepartureTime(String destination, String time1) {
-    List<Flight> planes = Factory.createFlights();
+  void testGetWithLessDepartureTime(String destination, String time1)
+  {
+    List<Flight> flights = Factory.createFlights();
 
-    Map<String, Flight> grouped = service.getWithLessDepartureTime(planes);
+    Map<String, Flight> grouped = service.getWithLessDepartureTime(flights);
     Flight earliestPlane = grouped.get(destination);
 
 
@@ -220,12 +232,10 @@ class ServiceTest
   }
 
   @Test
-  void testOutputAndReadBinFlight()
-  {
-    List<Flight> flights = List.of(
-            new Flight(1, "AA101", "New York", LocalTime.of(10, 0) , LocalTime.of(13, 0),100,"AirlineA"),
-            new Flight(2, "BB202", "London", LocalTime.of(12, 30), LocalTime.of(10, 0), 120,"AirlineB")
-    );
+  void testOutputAndReadBinFlight() {
+    List<Flight> flights = new ArrayList<>();
+    flights.add(new Flight(1, "AA101", "New York", LocalTime.of(10, 0), LocalTime.of(13, 0), 100, "AirlineA"));
+    flights.add(new Flight(2, "BB202", "London", LocalTime.of(12, 30), LocalTime.of(10, 0), 120, "AirlineB"));
 
     service.outputListBinFlight(flights, "testFlights.bin");
     List<Flight> readFlights = service.readListBinFlight("testFlights.bin");
@@ -235,12 +245,10 @@ class ServiceTest
   }
 
   @Test
-  void testOutputAndReadTextFlight()
-  {
-    List<Flight> flights = List.of(
-            new Flight(1, "AA101", "New York", LocalTime.of(10, 0) , LocalTime.of(13, 0),100,"AirlineA"),
-            new Flight(2, "BB202", "London", LocalTime.of(12, 30), LocalTime.of(10, 0), 120,"AirlineB")
-    );
+  void testOutputAndReadTextFlight() {
+    List<Flight> flights = new ArrayList<>();
+    flights.add(new Flight(1, "AA101", "New York", LocalTime.of(10, 0), LocalTime.of(13, 0), 100, "AirlineA"));
+    flights.add(new Flight(2, "BB202", "London", LocalTime.of(12, 30), LocalTime.of(10, 0), 120, "AirlineB"));
 
     service.outputListTextFlight(flights, "testFlights.txt");
     List<Flight> readFlights = service.readListTextFlight(flights, "testFlights.txt");
