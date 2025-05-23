@@ -231,8 +231,7 @@ public class Input
 
 
 
-  public Flight enterNewFlight()
-  {
+    public Flight enterNewFlight(List<Flight> flights) {
     Image image = new Image(Objects.requireNonNull(getClass().getResource("/images/logo.jpg")).toExternalForm());
     ImageView imageView = new ImageView(image);
     imageView.setFitWidth(40);
@@ -282,7 +281,8 @@ public class Input
     ButtonType buttonTypeOk = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
     dialog.getDialogPane().getButtonTypes().addAll(buttonTypeOk, ButtonType.CANCEL);
 
-    dialog.setResultConverter(button -> {
+    dialog.setResultConverter(button ->
+    {
       if (button == buttonTypeOk) {
         try {
           String destination = destField.getText().trim();
@@ -292,9 +292,14 @@ public class Input
           int seatCount = Integer.parseInt(seatsField.getText().trim());
           String airline = airlineField.getText().trim();
 
-          return Factory.createFlight(destination, flightNumber, departureTime, arrivalTime, seatCount, airline);
+          int newId = flights.stream()
+                  .mapToInt(Flight::getId)
+                  .max()
+                  .orElse(0) + 1;
+
+          return new Flight(newId, destination, flightNumber, LocalTime.parse(departureTime), LocalTime.parse(arrivalTime), seatCount, airline);
         } catch (Exception e) {
-          View.showError("Invalid input. Please check all fields and use HH:mm format for times.");
+          view.showError("Invalid input. Please check all fields and use HH:mm format for times.");
           return null;
         }
       }
@@ -304,7 +309,6 @@ public class Input
     Optional<Flight> result = dialog.showAndWait();
     return result.orElse(null);
   }
-
 
   public String chosenFile(String title)
   {
