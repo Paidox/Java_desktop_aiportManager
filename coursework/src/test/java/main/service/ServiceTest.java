@@ -37,7 +37,6 @@ class ServiceTest
     Files.deleteIfExists(Path.of("testFlights.txt"));
   }
 
-
   @Test
   void testAddTicket()
   {
@@ -56,9 +55,7 @@ class ServiceTest
     List<Flight> flights = new ArrayList<>();
     List<Ticket> tickets = new ArrayList<>();
 
-    Flight flight = new Flight(1, "Kyiv", "FL001",
-            LocalTime.of(10, 0), LocalTime.of(12, 0),
-            100, "UIA");
+    Flight flight = new Flight(1, "Kyiv", "FL001",  LocalTime.of(10, 0), LocalTime.of(12, 0), 100, "UIA");
 
     flights.add(flight);
 
@@ -72,10 +69,8 @@ class ServiceTest
     assertEquals(0, tickets.size());
   }
 
-
   @Test
   void testAddFlight() {
-
     List<Flight> planes = Factory.createFlights();
     Flight newPlane = Factory.createFlight("Rome", "FL999", "13:00", "17:00", 180, "Alitalia");
 
@@ -84,7 +79,6 @@ class ServiceTest
     assertEquals(10, planes.size());
     assertEquals(newPlane, planes.get(9));
   }
-
 
   @Test
   void testRemoveTicket()
@@ -99,8 +93,6 @@ class ServiceTest
     assertTrue(removed);
     assertEquals(2, tickets.size());
   }
-
-
 
   @Test
   void testFindByDestination()
@@ -123,13 +115,19 @@ class ServiceTest
 
     List<Flight> result = service.findByTime(planes, LocalTime.parse("12:00"));
 
-    List<String> expectedDestinations = List.of("Paris", "London", "Dubai", "Dubai", "Singapore", "Istanbul");
+    List<String> expectedDestinations = new ArrayList<>();
+    expectedDestinations.add("Paris");
+    expectedDestinations.add("London");
+    expectedDestinations.add("Dubai");
+    expectedDestinations.add("Dubai");
+    expectedDestinations.add("Singapore");
+    expectedDestinations.add("Istanbul");
+
     List<String> actualDestinations = result.stream()
             .map(Flight::getDestination)
             .collect(Collectors.toList());
 
     Assertions.assertEquals(expectedDestinations.size(), actualDestinations.size());
-
     Assertions.assertIterableEquals(expectedDestinations, actualDestinations);
   }
 
@@ -140,13 +138,15 @@ class ServiceTest
 
     List<Ticket> result = service.findByTicketNumber(tickets, "FL123");
 
-    List<String> expected = List.of("Alice Smith", "Ivan Top" );
+    List<String> expected = new ArrayList<>();
+    expected.add("Alice Smith");
+    expected.add("Ivan Top");
+
     List<String> actual = result.stream()
             .map(Ticket::getPassengerName)
             .toList();
 
     Assertions.assertEquals(expected.size(), actual.size());
-
     Assertions.assertIterableEquals(expected, actual);
   }
 
@@ -157,14 +157,23 @@ class ServiceTest
 
     List<Flight> result = service.sortByStopsAndNumber(planes);
 
-    List<String> expectedDestinations = List.of( "Paris", "London", "New York", "Istanbul", "Dubai", "New York","Dubai","Singapore","Tokyo");
+    List<String> expectedDestinations = new ArrayList<>();
+    expectedDestinations.add("Paris");
+    expectedDestinations.add("London");
+    expectedDestinations.add("New York");
+    expectedDestinations.add("Istanbul");
+    expectedDestinations.add("Dubai");
+    expectedDestinations.add("New York");
+    expectedDestinations.add("Dubai");
+    expectedDestinations.add("Singapore");
+    expectedDestinations.add("Tokyo");
+
     List<String> actualDestinations = result.stream()
             .map(Flight::getDestination)
             .collect(Collectors.toList());
 
     Assertions.assertIterableEquals(expectedDestinations, actualDestinations);
   }
-
 
   @Test
   void testCheckPlaneByNumberAndAirline()
@@ -177,7 +186,6 @@ class ServiceTest
     assertEquals(expected, result.getDestination());
   }
 
-
   @Test
   void testSortByAirline()
   {
@@ -185,13 +193,16 @@ class ServiceTest
 
     List<Ticket> result = service.sortByAirline(tickets);
 
-    List<String> expected = List.of( "Tokyo", "New York", "New York");
+    List<String> expected = new ArrayList<>();
+    expected.add("Tokyo");
+    expected.add("New York");
+    expected.add("New York");
+
     List<String> actual = result.stream()
             .map(Ticket::getDestination)
             .collect(Collectors.toList());
 
     Assertions.assertEquals(expected.size(), actual.size());
-
     Assertions.assertIterableEquals(expected, actual);
   }
 
@@ -206,14 +217,14 @@ class ServiceTest
     Map<String, List<Flight>> grouped = service.getFlightsGroupedByDestinationSortedByNumber(planes);
     List<Flight> destinationPlanes = grouped.get(destination);
 
-    List<String> flightNumbers = destinationPlanes.stream()
-            .map(Flight::getFlightNumber)
-            .toList();
+    List<String> flightNumbers = new ArrayList<>();
+    for (Flight f : destinationPlanes) {
+      flightNumbers.add(f.getFlightNumber());
+    }
 
     Assertions.assertEquals(firstFlight, flightNumbers.get(0));
     Assertions.assertEquals(lastFlight, flightNumbers.get(flightNumbers.size() - 1));
   }
-
 
   @ParameterizedTest
   @CsvSource({
@@ -227,12 +238,11 @@ class ServiceTest
     Map<String, Flight> grouped = service.getWithLessDepartureTime(flights);
     Flight earliestPlane = grouped.get(destination);
 
-
     Assertions.assertEquals(time1, earliestPlane.getDepartureTime().toString());
   }
 
-@Test
-void testOutputAndReadBinFlight() {
+  @Test
+  void testOutputAndReadBinFlight() {
     List<Flight> flights = new ArrayList<>();
     flights.add(Factory.createFlight("New York", "AA101", "10:00", "13:00", 100, "AirlineA"));
     flights.add(Factory.createFlight("London", "BB202", "12:30", "10:00", 120, "AirlineB"));
@@ -242,10 +252,10 @@ void testOutputAndReadBinFlight() {
 
     assertNotNull(readFlights);
     assertEquals(flights.size(), readFlights.size());
-}
+  }
 
-@Test
-void testOutputAndReadTextFlight() {
+  @Test
+  void testOutputAndReadTextFlight() {
     List<Flight> flights = new ArrayList<>();
     flights.add(Factory.createFlight("New York", "AA101", "10:00", "13:00", 100, "AirlineA"));
     flights.add(Factory.createFlight("London", "BB202", "12:30", "10:00", 120, "AirlineB"));
@@ -255,6 +265,6 @@ void testOutputAndReadTextFlight() {
 
     assertNotNull(readFlights);
     assertEquals(flights.size(), readFlights.size());
-}
+  }
 
 }
