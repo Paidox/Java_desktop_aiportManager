@@ -83,16 +83,25 @@ public class Input
     String fileName = parts[0];
     String dataType = parts[1];
 
-    if (fileName.endsWith(".txt")) {
-      if (dataType.equals("Flights")) {
+    if (fileName.endsWith(".txt")) 
+    {
+      if (dataType.equals("Flights")) 
+      {
         service.outputListTextFlight(flights, fileName);
-      } else if (dataType.equals("Ticket")) {
+      } 
+      else if (dataType.equals("Ticket")) 
+      {
         service.outputListTextTicket(tickets, fileName);
       }
-    } else if (fileName.endsWith(".bin")) {
-      if (dataType.equals("Flights")) {
+    } 
+    else if (fileName.endsWith(".bin")) 
+    {
+      if (dataType.equals("Flights")) 
+      {
         service.outputListBinFlight(flights, fileName);
-      } else if (dataType.equals("Ticket")) {
+      } 
+      else if (dataType.equals("Ticket")) 
+      {
         service.outputListBinTicket(tickets, fileName);
       }
     }
@@ -108,24 +117,30 @@ public class Input
     String fileName = parts[0];
     String dataType = parts[1];
 
-    if (dataType.equals("Flights")) {
+    if (dataType.equals("Flights")) 
+    {
       flights.clear();
-      if (fileName.endsWith(".txt")) {
+      if (fileName.endsWith(".txt")) 
+      {
         flights.addAll(service.readListTextFlight(flights, fileName));
-      } else if (fileName.endsWith(".bin")) {
+      } 
+      else if (fileName.endsWith(".bin")) 
+      {
         flights.addAll(service.readListBinFlight(fileName));
       }
-    } else if (dataType.equals("Ticket")) {
+    } else if (dataType.equals("Ticket")) 
+    {
       tickets.clear();
-      if (fileName.endsWith(".txt")) {
+      if (fileName.endsWith(".txt")) 
+      {
         tickets.addAll(service.readListTextTicket(tickets, fileName));
-      } else if (fileName.endsWith(".bin")) {
+      } 
+      else if (fileName.endsWith(".bin")) 
+      {
         tickets.addAll(service.readListBinTicket(fileName));
       }
     }
   }
-
-
 
   public Optional<Ticket> createTicketFromSelection(TableView<Flight> flightTable)
   {
