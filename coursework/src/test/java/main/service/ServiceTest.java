@@ -231,29 +231,30 @@ class ServiceTest
     Assertions.assertEquals(time1, earliestPlane.getDepartureTime().toString());
   }
 
-  @Test
-  void testOutputAndReadBinFlight() {
+@Test
+void testOutputAndReadBinFlight() {
     List<Flight> flights = new ArrayList<>();
-    flights.add(new Flight(1, "AA101", "New York", LocalTime.of(10, 0), LocalTime.of(13, 0), 100, "AirlineA"));
-    flights.add(new Flight(2, "BB202", "London", LocalTime.of(12, 30), LocalTime.of(10, 0), 120, "AirlineB"));
+    flights.add(Factory.createFlight("New York", "AA101", "10:00", "13:00", 100, "AirlineA"));
+    flights.add(Factory.createFlight("London", "BB202", "12:30", "10:00", 120, "AirlineB"));
 
     service.outputListBinFlight(flights, "testFlights.bin");
     List<Flight> readFlights = service.readListBinFlight("testFlights.bin");
 
     assertNotNull(readFlights);
     assertEquals(flights.size(), readFlights.size());
-  }
+}
 
-  @Test
-  void testOutputAndReadTextFlight() {
+@Test
+void testOutputAndReadTextFlight() {
     List<Flight> flights = new ArrayList<>();
-    flights.add(new Flight(1, "AA101", "New York", LocalTime.of(10, 0), LocalTime.of(13, 0), 100, "AirlineA"));
-    flights.add(new Flight(2, "BB202", "London", LocalTime.of(12, 30), LocalTime.of(10, 0), 120, "AirlineB"));
+    flights.add(Factory.createFlight("New York", "AA101", "10:00", "13:00", 100, "AirlineA"));
+    flights.add(Factory.createFlight("London", "BB202", "12:30", "10:00", 120, "AirlineB"));
 
     service.outputListTextFlight(flights, "testFlights.txt");
     List<Flight> readFlights = service.readListTextFlight(flights, "testFlights.txt");
 
     assertNotNull(readFlights);
     assertEquals(flights.size(), readFlights.size());
-  }
+}
+
 }
