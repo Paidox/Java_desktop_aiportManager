@@ -17,8 +17,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ArrayList;
-
 
 public class Input
 {
@@ -31,17 +29,22 @@ public class Input
   private final Service service = new Service();
   private final View view = new View();
 
-  public String enterText(String prompt) {
-    while (true) {
+  public String enterText(String prompt)
+  {
+    while (true)
+    {
       TextInputDialog dialog = new TextInputDialog();
       dialog.setTitle("Enter Text");
       dialog.setHeaderText(prompt);
       dialog.setContentText("Please enter text:");
 
       Optional<String> result = dialog.showAndWait();
-      if (result.isPresent()) {
+      if (result.isPresent())
+      {
         return result.get().trim();
-      } else {
+      }
+      else
+      {
         return "";
       }
     }
@@ -52,20 +55,28 @@ public class Input
   {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    while (true) {
+    while (true)
+    {
       TextInputDialog dialog = new TextInputDialog();
       dialog.setTitle("Enter Time");
       dialog.setHeaderText(prompt);
       dialog.setContentText("Enter time (HH:mm):");
 
       Optional<String> result = dialog.showAndWait();
-      if (result.isPresent()) {
-        try {
+
+      if (result.isPresent())
+      {
+        try
+        {
           return LocalTime.parse(result.get().trim(), formatter);
-        } catch (DateTimeParseException e) {
-          showError();
         }
-      } else {
+        catch (DateTimeParseException e)
+        {
+          view.showError("Error");
+        }
+      }
+      else
+      {
         return null;
       }
     }
@@ -83,31 +94,11 @@ public class Input
     String fileName = parts[0];
     String dataType = parts[1];
 
-    if (fileName.endsWith(".txt")) 
-    {
-      if (dataType.equals("Flights")) 
-      {
-        service.outputListTextFlight(flights, fileName);
-      } 
-      else if (dataType.equals("Ticket")) 
-      {
-        service.outputListTextTicket(tickets, fileName);
-      }
-    } 
-    else if (fileName.endsWith(".bin")) 
-    {
-      if (dataType.equals("Flights")) 
-      {
-        service.outputListBinFlight(flights, fileName);
-      } 
-      else if (dataType.equals("Ticket")) 
-      {
-        service.outputListBinTicket(tickets, fileName);
-      }
-    }
+    service.saveDataToFile(flights, tickets, fileName, dataType);
   }
 
-  public void readData(List<Flight> flights, List<Ticket> tickets) {
+  public void readData(List<Flight> flights, List<Ticket> tickets)
+  {
     String result = chosenFile("Load data from file");
     if (result == null) return;
 
@@ -117,42 +108,22 @@ public class Input
     String fileName = parts[0];
     String dataType = parts[1];
 
-    if (dataType.equals("Flights")) 
-    {
-      flights.clear();
-      if (fileName.endsWith(".txt")) 
-      {
-        flights.addAll(service.readListTextFlight(flights, fileName));
-      } 
-      else if (fileName.endsWith(".bin")) 
-      {
-        flights.addAll(service.readListBinFlight(fileName));
-      }
-    } else if (dataType.equals("Ticket")) 
-    {
-      tickets.clear();
-      if (fileName.endsWith(".txt")) 
-      {
-        tickets.addAll(service.readListTextTicket(tickets, fileName));
-      } 
-      else if (fileName.endsWith(".bin")) 
-      {
-        tickets.addAll(service.readListBinTicket(fileName));
-      }
-    }
+    service.readDataFromFile(flights, tickets, fileName, dataType);
   }
+
 
   public Optional<Ticket> createTicketFromSelection(TableView<Flight> flightTable)
   {
     Flight selectedFlight = flightTable.getSelectionModel().getSelectedItem();
 
     if (selectedFlight == null) {
-      View.showError("Please select a flight from the table.");
+      view.showError("Please select a flight from the table.");
       return Optional.empty();
     }
 
-    if (selectedFlight.getSeatCount() <= 0) {
-      View.showError("No free seats available on this flight.");
+    if (selectedFlight.getSeatCount() <= 0)
+    {
+      view.showError("No free seats available on this flight.");
       return Optional.empty();
     }
 
@@ -169,14 +140,12 @@ public class Input
     return Optional.of(ticket);
   }
 
-  public void showTicketAddedMessage()
-  {
-    View.showText("Ticket", "Ticket successfully added.");
-  }
 
-  public Ticket enterNewTicket(Flight selectedFlight) {
-    if (selectedFlight == null) {
-      View.showError("No flight selected.");
+  public Ticket enterNewTicket(Flight selectedFlight)
+  {
+    if (selectedFlight == null)
+    {
+      view.showError("No flight selected.");
       return null;
     }
 
@@ -206,11 +175,14 @@ public class Input
     ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
     dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-    dialog.setResultConverter(button -> {
-      if (button == okButtonType) {
+    dialog.setResultConverter(button ->
+    {
+      if (button == okButtonType)
+      {
         String passengerName = passengerField.getText().trim();
-        if (passengerName.isEmpty()) {
-          View.showError("Passenger name cannot be empty.");
+        if (passengerName.isEmpty())
+        {
+          view.showError("Passenger name cannot be empty.");
           return null;
         }
 
@@ -230,8 +202,8 @@ public class Input
   }
 
 
-
-    public Flight enterNewFlight(List<Flight> flights) {
+  public Flight enterNewFlight(List<Flight> flights)
+  {
     Image image = new Image(Objects.requireNonNull(getClass().getResource("/images/logo.jpg")).toExternalForm());
     ImageView imageView = new ImageView(image);
     imageView.setFitWidth(40);
@@ -283,8 +255,10 @@ public class Input
 
     dialog.setResultConverter(button ->
     {
-      if (button == buttonTypeOk) {
-        try {
+      if (button == buttonTypeOk)
+      {
+        try
+        {
           String destination = destField.getText().trim();
           String flightNumber = flightField.getText().trim();
           String departureTime = timeField.getText().trim();
@@ -292,13 +266,12 @@ public class Input
           int seatCount = Integer.parseInt(seatsField.getText().trim());
           String airline = airlineField.getText().trim();
 
-          int newId = flights.stream()
-                  .mapToInt(Flight::getId)
-                  .max()
-                  .orElse(0) + 1;
+          int newId = service.newFlightId(flights);
 
           return new Flight(newId, destination, flightNumber, LocalTime.parse(departureTime), LocalTime.parse(arrivalTime), seatCount, airline);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
           view.showError("Invalid input. Please check all fields and use HH:mm format for times.");
           return null;
         }
@@ -359,11 +332,4 @@ public class Input
     Optional<String> result = dialog.showAndWait();
     return result.orElse(null);
   }
-
-
-  private void showError()
-  {
-    System.out.println("Error");
-  }
-
 }
