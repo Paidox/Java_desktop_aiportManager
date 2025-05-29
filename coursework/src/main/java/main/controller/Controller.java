@@ -37,7 +37,7 @@ public class Controller
   private TableView<Ticket> ticketsTable;
 
   @FXML
-  private TableColumn<Ticket, String> passengerNameCol, flightNumberCol, destinationCol, airlineCol;
+  private TableColumn<Ticket, String> flightId, passengerNameCol, flightNumberCol, destinationCol, airlineCol;
 
   @FXML
   private TableView<Flight> flightTable;
@@ -48,6 +48,10 @@ public class Controller
   @FXML
   private TableColumn<Flight, String> destination,  flightNumber, departureTime,arrivalTime, airline;
 
+  private void centerColumn(TableColumn<?, ?> column)
+  {
+    column.setStyle("-fx-alignment: CENTER;");
+  }
 
   public void initialize()
   {
@@ -58,16 +62,25 @@ public class Controller
     arrivalTime.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getArrivalTime().toString()));
     seatCount.setCellValueFactory(new PropertyValueFactory<>("seatCount"));
     airline.setCellValueFactory(new PropertyValueFactory<>("airline"));
+    centerColumn(idColumn);
+    centerColumn(flightNumber);
+    centerColumn(departureTime);
+    centerColumn(arrivalTime);
+    centerColumn(seatCount);
     //flightTable.setItems(FXCollections.observableArrayList(tickets1));
     initializeTicketsTable();
   }
 
   public void initializeTicketsTable()
   {
+    flightId.setCellValueFactory(new PropertyValueFactory<>("flightId"));
     passengerNameCol.setCellValueFactory(new PropertyValueFactory<>("passengerName"));
     flightNumberCol.setCellValueFactory(new PropertyValueFactory<>("flightNumber"));
     destinationCol.setCellValueFactory(new PropertyValueFactory<>("destination"));
     airlineCol.setCellValueFactory(new PropertyValueFactory<>("airline"));
+
+    centerColumn(flightId);
+    centerColumn(flightNumberCol);
     //ticketsTable.setItems(FXCollections.observableArrayList(tickets));
   }
 
@@ -86,7 +99,8 @@ public class Controller
   }
 
   @FXML
-  public void saveAs() {
+  public void saveAs()
+  {
     input.saveData(flights, tickets);
     updateTable(flights);
     updateTicketsTable(tickets);
@@ -168,7 +182,7 @@ public class Controller
     service.addTicket(tickets, newTicket);
 
     updateTicketsTable(tickets);
-    input.showTicketAddedMessage();
+    view.showTicketAddedMessage();
     updateTable(flights);
 
     ticketsTable.setVisible(true);
@@ -216,7 +230,8 @@ public class Controller
     String operation = operationsChoiceBox.getValue();
     if (operation == null) return;
 
-    switch (operation) {
+    switch (operation)
+    {
       case "1. Find flights by destination" ->
       {
         String city = input.enterText("Enter destination city:");
