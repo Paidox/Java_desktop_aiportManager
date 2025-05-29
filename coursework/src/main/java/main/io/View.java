@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 
 public class View 
 {
-  public static void showText(String title, String content)
+  public void showText(String title, String content)
   {
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
     alert.setTitle(title);
@@ -19,7 +19,7 @@ public class View
     alert.showAndWait();
   }
 
-  public static void showError(String message)
+  public void showError(String message)
   {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle("Error");
@@ -28,4 +28,8 @@ public class View
     alert.showAndWait();
   }
 
+  public void showTicketAddedMessage()
+  {
+    showText("Ticket", "Ticket successfully added.");
+  }
 }
